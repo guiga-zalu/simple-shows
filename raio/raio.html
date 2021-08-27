@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="author-name" value="Guilherme Zaluchi" />
+		<meta name="author-email" value="desenv@guilherme.zaluchi.com.br" />
+		<title>Raio</title>
+<style>
+/* - The variables - */
+.painéis{
+  /* - Square size - */
+  --tamanho: 18px;
+  /* - Square's border width - */
+  --borda: 1px;
+}
+/* - Everything else - */
+*{
+	border: none;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+body{
+	background-color: black;
+}
+.painéis{
+	margin: auto;
+	border-collapse: collapse;
+}
+.painéis .linha td{
+	background-color: transparent;
+	width: var(--tamanho);
+	height: var(--tamanho);
+	border: var(--borda) solid;
+	border-color: transparent;
+}
+</style>
+	</head>
+	<body>
+<table class="painéis"></table>
+<script src="./raio.js"></script>
+	</body>
+</html>
