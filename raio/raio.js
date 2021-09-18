@@ -8,9 +8,9 @@
 
 // --- Configs ---
 	// The height (in squares)
-const	altura = 160,
+const	H = 160,
 	// The width (in squares)
-	largura = 96,
+	W = 96,
 	// The chance of a vertical line be formed
 	chance_vertical = 0.5,
 	// The chance of a horizontal line be formed
@@ -104,13 +104,14 @@ class Painél{
 	get valor(){ return this._valor; }
 	set valor(x){
 		this._valor = x | 0;
-		var v = 1 - x / (altura * largura);
+		var v = 1 - x / (H * W);
 		v = 5 * (1 - v * v);
 		this.elemento.style.backgroundColor =
 			`hsla(${Math.floor(360 * v)}deg, 60%, 20%, 0.4)`;
 	}
 	/**
 	 * Generates the walls of the square
+	 * @memberof Painél
 	 */
 	gerarParedes(){
 		const { paredes, x, y } = this;
@@ -121,7 +122,7 @@ class Painél{
 			paredes.esquerda = true;
 			painéis[y][x - 1].paredes.direita = true;
 		}
-		if(x === largura - 1)
+		if(x === W - 1)
 			paredes.direita = true;
 		// Gere parede direita
 		else if(Math.random() < chance_horizontal / 2){
@@ -134,7 +135,7 @@ class Painél{
 			paredes.cima = true;
 			painéis[y - 1][x].paredes.baixo = true;
 		}
-		if(y < altura - 1 && Math.random() < chance_vertical / 2){
+		if(y < H - 1 && Math.random() < chance_vertical / 2){
 			paredes.baixo = true;
 			painéis[y + 1][x].paredes.cima = true;
 		}
@@ -154,10 +155,10 @@ class Painél{
 		if(y > 0 && !paredes.cima){
 			ret.push(painéis[y - 1][x]);
 		}
-		if(x < largura - 1 && !paredes.direita){
+		if(x < W - 1 && !paredes.direita){
 			ret.push(painéis[y][x + 1]);
 		}
-		if(y < altura - 1 && !paredes.baixo){
+		if(y < H - 1 && !paredes.baixo){
 			ret.push(painéis[y + 1][x]);
 		}
 		
@@ -166,6 +167,7 @@ class Painél{
 	/**
 	 * Returns the next neighbouring squares to be searched
 	 * @returns { Painél[] }
+	 * @memberof Painél
 	 */
 	próximos(){
 		const { x, y, paredes } = this;
@@ -174,17 +176,19 @@ class Painél{
 			ret.push(p);
 		if(y > 0 && (p = painéis[y - 1][x]).valor === - 1 && !paredes.cima)
 			ret.push(p);
-		if(x < largura - 1 && (p = painéis[y][x + 1]).valor === - 1 && !paredes.direita)
+		if(x < W - 1 && (p = painéis[y][x + 1]).valor === - 1 && !paredes.direita)
 			ret.push(p);
-		if(y < altura - 1 && (p = painéis[y + 1][x]).valor === - 1 && !paredes.baixo)
+		if(y < H - 1 && (p = painéis[y + 1][x]).valor === - 1 && !paredes.baixo)
 			ret.push(p);
 		
 		return ret;
 	}
 	/**
 	 * 
+	 * @static
 	 * @param { number } y - Número da linha
 	 * @returns { HTMLDivElement } Linha
+	 * @memberof Painél
 	 */
 	static linha(y){
 		if(y === this.linhas.length){
@@ -204,9 +208,9 @@ Painél.elemento = document.body.querySelector(".painéis");
 Painél.linhas = [];
 
 painéis = Array.from(
-	{ length: altura },
+	{ length: H },
 	(_, i) => Array.from(
-		{ length: largura },
+		{ length: W },
 		(_, j) => new Painél(j, i)
 	)
 );//.flat(2);
@@ -245,7 +249,7 @@ async function vai(){
 		melhor = pos.reduce((m, p) => p.y > m.y ? p : m);
 		
 		await wait(delays[0]);
-	}while(melhor.y < altura - 1);
+	}while(melhor.y < H - 1);
 	
 	// console.log(melhor)
 	return { pos, melhor };
@@ -258,11 +262,7 @@ async function vai(){
 async function volta(promise){
 	const { pos, melhor } = await promise;
 	
-	var melhores = pos.reduce((m, p) => {
-		if(p.y === melhor.y)
-			m.push(p);
-		return m;
-	}, []).map(c => painéis[c.y][c.x]);
+	var melhores = pos.filter(p => p.y === melhor.y).map(c => painéis[c.y][c.x]);
 	
 	// melhores = [melhores[0]];
 	/** @type { number } */
@@ -278,7 +278,7 @@ async function volta(promise){
 					: (
 						b.valor === - 1
 						? a
-						: (a.valor < b._valor ? a : b)
+						: (a.valor < b.valor ? a : b)
 					)
 			);
 			// console.log(p)

@@ -1,0 +1,1 @@
+ffmpeg -framerate 5 -i ./output/%4d.png -pix_fmt yuv420p ./saida.mkv

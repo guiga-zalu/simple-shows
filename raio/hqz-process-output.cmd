@@ -1,0 +1,1 @@
+FOR %i IN (./output/*.json) DO hqz %i %~ni.png
